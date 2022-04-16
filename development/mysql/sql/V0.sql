@@ -75,7 +75,7 @@ CREATE TABLE `session` (
     `value` VARCHAR(256) NOT NULL,
     `linked_user_id` bigint NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
-    PRIMARY KEY (`session_id`)
+    PRIMARY KEY (`session_id`, `value`)
 );
 
 CREATE TABLE `file` (
