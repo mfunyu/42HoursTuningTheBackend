@@ -405,6 +405,9 @@ const allActive = async (req, res) => {
     'select * from record_item_file where linked_record_id = ? order by item_id asc limit 1';
   const countQs = 'select count(*) from record_comment where linked_record_id = ?';
   const searchLastQs = 'select * from record_last_access where user_id = ? and record_id = ?';
+ 
+  const get_lastaccess = 'select * from record_last_access';
+  const [lastaccess_all] = await pool.query(get_lastaccess);
 
     const get_thumbnail = 'select * from record_item_file order by item_id';
 	const [thumbnail_data] = await pool.query(get_thumbnail);
@@ -461,15 +464,17 @@ const allActive = async (req, res) => {
       commentCount = countResult[0]['count(*)'];
     }
 
-    const [lastResult] = await pool.query(searchLastQs, [user.user_id, recordId]);
-    if (lastResult.length === 1) {
-      mylog(updatedAt);
-      const updatedAtNum = Date.parse(updatedAt);
-      const accessTimeNum = Date.parse(lastResult[0].access_time);
-      if (updatedAtNum <= accessTimeNum) {
-        isUnConfirmed = false;
-      }
-    }
+	len = lastaccess_all.length;
+	for (let n = 0; n < len; n++) {
+		if (lastaccess_all[n]['user_id'] == user.user_id && lastaccess_all[n]['record_id'] == recordId) {
+			const updatedAtNum = Date.parse(updatedAt);
+			const accessTimeNum = Date.parse(lastaccess_all[n]['access_time']);
+			if (updatedAtNum <= accessTimeNum) {
+			  isUnConfirmed = false;
+			}
+			break;
+		}
+	}
 
     resObj.recordId = recordId;
     resObj.title = line.title;
