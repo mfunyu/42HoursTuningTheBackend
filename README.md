@@ -1,6 +1,6 @@
 # 42時間耐久パフォーマンスチューニング
 
-https://www.notion.so/TtbCS-team-28-f62d2d9e58a943318eec548d59aad9bb#e0cdf85dc2fd4b61911ead6d4e5acb29
+https://quilled-discovery-253.notion.site/TtbCS-team-28-f62d2d9e58a943318eec548d59aad9bb
 
 <div align="center">
 <img src="./document/img/title.png" alt="属性" title="タイトル">
