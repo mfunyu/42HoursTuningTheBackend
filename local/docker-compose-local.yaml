@@ -1,6 +1,7 @@
 version: "3.7"
 services:
     nginx:
+      container_name: local_nginx
       build:
         context: ./localNginx #ローカル開発用です。HTTPSポートは公開しません 
         dockerfile: Dockerfile
@@ -9,15 +10,18 @@ services:
             published: 8080
             protocol: tcp
     backend:
+      container_name: local_backend
       init: true
       build:
         context: ../development/backend
         dockerfile: Dockerfile
     frontend:
+      container_name: local_frontend
       build:
         context: ./dummyFrontend #dummyFrontendはダミーのhtmlのみ返却します。
         dockerfile: Dockerfile
     mysql:
+      container_name: local_mysql
       build:
         context: ./localMysql
         dockerfile: Dockerfile
