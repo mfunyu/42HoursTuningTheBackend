@@ -405,6 +405,9 @@ const allActive = async (req, res) => {
     'select * from record_item_file where linked_record_id = ? order by item_id asc limit 1';
   const countQs = 'select count(*) from record_comment where linked_record_id = ?';
   const searchLastQs = 'select * from record_last_access where user_id = ? and record_id = ?';
+
+  const get_users = 'select * from user';
+  const [user_all] = await pool.query(get_users);
  
   const get_groups = 'select * from group_info';
   const [group_all] = await pool.query(get_groups);
@@ -446,12 +449,16 @@ const allActive = async (req, res) => {
     let commentCount = 0;
     let isUnConfirmed = true;
 
-    const [userResult] = await pool.query(searchUserQs, [createdBy]);
-    if (userResult.length === 1) {
-      createdByName = userResult[0].name;
-    }
+	let len = user_all.length;
+	for (let n = 0; n < len; n++) {
+		if (user_all[n]['user_id'] == createdBy)
+		{
+			createdByName = user_all[n]['name'];
+			break;
+		}
+	}
 
-	let len = group_all.length;
+	len = group_all.length;
 	for (let n = 0; n < len; n++) {
 		if (group_all[n]['group_id'] == applicationGroup)
 		{
