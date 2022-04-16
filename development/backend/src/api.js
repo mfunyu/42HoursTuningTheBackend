@@ -406,6 +406,10 @@ const allActive = async (req, res) => {
   const countQs = 'select count(*) from record_comment where linked_record_id = ?';
   const searchLastQs = 'select * from record_last_access where user_id = ? and record_id = ?';
 
+    const get_thumbnail = 'select * from record_item_file order by item_id';
+	const [thumbnail_data] = await pool.query(get_thumbnail);
+
+
   for (let i = 0; i < recordResult.length; i++) {
     const resObj = {
       recordId: null,
@@ -442,11 +446,15 @@ const allActive = async (req, res) => {
     if (groupResult.length === 1) {
       applicationGroupName = groupResult[0].name;
     }
-
-    const [itemResult] = await pool.query(searchThumbQs, [recordId]);
-    if (itemResult.length === 1) {
-      thumbNailItemId = itemResult[0].item_id;
-    }
+	
+	let len = thumbnail_data.length;
+	for (let n = 0; n < len; n++) {
+		if (thumbnail_data[n]['linked_record_id'] == recordId)
+		{
+			thumbNailItemId = thumbnail_data[n]['item_id'];
+			break;
+		}
+	}
 
     const [countResult] = await pool.query(countQs, [recordId]);
     if (countResult.length === 1) {
