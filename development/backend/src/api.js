@@ -405,9 +405,12 @@ const allActive = async (req, res) => {
     'select * from record_item_file where linked_record_id = ? order by item_id asc limit 1';
   const countQs = 'select count(*) from record_comment where linked_record_id = ?';
   const searchLastQs = 'select * from record_last_access where user_id = ? and record_id = ?';
- 
+
   const get_lastaccess = 'select * from record_last_access';
   const [lastaccess_all] = await pool.query(get_lastaccess);
+  
+  const get_count = 'select * from record_comment';
+  const [count_all] = await pool.query(get_count);
 
     const get_thumbnail = 'select * from record_item_file order by item_id';
 	const [thumbnail_data] = await pool.query(get_thumbnail);
@@ -459,10 +462,14 @@ const allActive = async (req, res) => {
 		}
 	}
 
-    const [countResult] = await pool.query(countQs, [recordId]);
-    if (countResult.length === 1) {
-      commentCount = countResult[0]['count(*)'];
-    }
+	len = count_all.length;
+	let sum = 0;
+	for (let n = 0; n < len; n++) {
+		if (count_all[n]['linked_record_id'] == recordId) {
+			++sum;
+		}
+	}
+	commentCount = sum;
 
 	len = lastaccess_all.length;
 	for (let n = 0; n < len; n++) {
